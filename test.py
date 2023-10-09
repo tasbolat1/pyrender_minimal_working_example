@@ -7,7 +7,8 @@ import matplotlib.animation as animation
 import time
 
 # GOAL: trimesh objects to the pyrender for quick rendering
-T = 10
+T = 15*60*10
+fps = 15
 save_dir = "rendered_images"
 
 # create trimesh primitive
@@ -74,10 +75,15 @@ def update(i):
     matplot_img.set_data(color)
     return [matplot_img]
 
+
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=1800)  # try -1 as well
+
+
 start_time = time.time()
 
-ani = animation.FuncAnimation(fig, update, T, interval=1, blit=False)
-ani.save('animation_drawing.gif', writer='imagemagick', fps=5)
+ani = animation.FuncAnimation(fig, update, T, interval=1, blit=True)
+ani.save('animation_drawing.mp4', writer=writer)
 
 print(f'It took {time.time()-start_time} to generate animation with {T} frames.')
 
